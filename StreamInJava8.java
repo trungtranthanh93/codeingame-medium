@@ -1,41 +1,33 @@
-/**
- * Copyright(C) 2016 Luvina Software Company
- *
- * StreamInJava8.java, Oct 25, 2016,  trung.tran
- */
 package tests;
 
-import java.util.stream.Stream;
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
 
-/**
- * @author trung.tran
- *
- */
 public class StreamInJava8 {
+
 	public static void main(String[] args) {
-		/*Stream.of("d2", "a2", "b1", "b3", "c").filter(s -> {
+		Scanner in = new Scanner(System.in);
+		int n = in.nextInt();
+		int k = in.nextInt();
+		int a[] = new int[n];
+		for (int a_i = 0; a_i < n; a_i++) {
+			a[a_i] = in.nextInt();
+		}
+		for (int i = 0; i < k; i++) {
+			for (int j = 0; j < a.length; j++) {
+				if (j == 0) {
+					int h = a[n - 1];
+					a[n - 1] = a[j];
+					a[j] = h;
+				} else {
+					a[j] = a[j - 1];
+				}
+			}
+		}
+		Arrays.stream(a).forEach(System.out::print);
 
-			System.out.println("filter: " + s);
-			return s.startsWith("d");
-		}).map(s -> {
-			System.out.println("map " + s);
-			return s;
-		}).sorted().mapToInt(x -> x.charAt(1)).forEach(System.out::println);
-		;*/
-		Stream.of("d2", "c", "b1", "b3", "a1")
-	    .sorted((s1, s2) -> {
-	        System.out.printf("sort: %s; %s\n", s1, s2);
-	        return s1.compareTo(s2);
-	    })
-	   /*.filter(s -> {
-	        System.out.println("filter: " + s);
-	        return s.startsWith("a");
-	    })
-	    .map(s -> {
-	        System.out.println("map: " + s);
-	        return s.toUpperCase();
-	    })*/
-	    .forEach(s -> System.out.println("forEach: " + s));
 	}
-
 }

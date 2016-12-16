@@ -5,8 +5,7 @@
  */
 package tests;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 /**
  * @author trung.tran
@@ -37,10 +36,11 @@ public class HienThiDayDuChuoi {
 	}
 
 	static String findMaxStringLoop(String string) {
-		int max = 0;
+		int countMax = 0;
 		int i = 0;
+		String subMaxStringLoop = "";
 		String maxStringLoop = "";
-		while (i < string.length() && string.substring(i).length() > max) {
+		while (i < string.length()) {
 			char charAtI = string.charAt(i);
 			int lastIndexOfI = string.lastIndexOf(charAtI);
 			while (lastIndexOfI != -1) {
@@ -50,9 +50,31 @@ public class HienThiDayDuChuoi {
 				}
 				String subStringFromI = string.substring(i, lastIndexOfI);
 				String subStringFromLastIndexOfI = string.substring(lastIndexOfI, last);
-				if (subStringFromI.equals(subStringFromLastIndexOfI) && max < subStringFromI.length()) {
-					max = subStringFromI.length();
-					maxStringLoop = subStringFromI;
+				if (subStringFromI.equals(subStringFromLastIndexOfI)) {
+					String maxStringCurrent = subStringFromI + subStringFromI;
+					int count = countLoopCount(maxStringCurrent);
+					String subStringLoop = maxStringCurrent.substring(0, maxStringCurrent.length() / count);
+					int indexOfStringLoop = string.indexOf(maxStringCurrent);
+					int length = maxStringCurrent.length();
+					int lastAfterStringLoop = indexOfStringLoop + length + subStringLoop.length();
+					if (lastAfterStringLoop <= string.length()) {
+						String AfterMaxStringLoop = string.substring(indexOfStringLoop + length, lastAfterStringLoop);
+						if (AfterMaxStringLoop.compareTo(subMaxStringLoop) < 0) {
+							break;
+						}
+						if (AfterMaxStringLoop.equals(subStringLoop)) {
+							maxStringCurrent = maxStringCurrent + subStringLoop;
+							count = count + 1;
+						}
+
+					}
+					if (maxStringCurrent.length() > maxStringLoop.length()) {
+						maxStringLoop = maxStringCurrent;
+						subMaxStringLoop = subStringLoop;
+						countMax = count;
+					} else {
+						break;
+					}
 				} else {
 					String subString = string.substring(i, lastIndexOfI);
 					lastIndexOfI = subString.lastIndexOf(charAtI) + i;
@@ -63,21 +85,7 @@ public class HienThiDayDuChuoi {
 		if (maxStringLoop.isEmpty()) {
 			return "";
 		}
-		maxStringLoop = maxStringLoop + maxStringLoop;
-		int count = countLoopCount(maxStringLoop);
-		if (count != 0) {
-			String subStringLoop = maxStringLoop.substring(0, maxStringLoop.length() / count);
-			int indexOfStringLoop = string.indexOf(maxStringLoop);
-			int length = maxStringLoop.length();
-			int last = indexOfStringLoop + length + subStringLoop.length();
-			if (last <= string.length()) {
-				String AfterMaxStringLoop = string.substring(indexOfStringLoop + length, last);
-				if (AfterMaxStringLoop.equals(subStringLoop)) {
-					maxStringLoop = maxStringLoop + subStringLoop;
-				}
-
-			}
-		}
+		System.out.println(maxStringLoop.substring(0, maxStringLoop.length() / countMax));
 		return maxStringLoop;
 	}
 
@@ -100,7 +108,7 @@ public class HienThiDayDuChuoi {
 		} else {
 			int indexOfSubMaxString = string.indexOf(maxStringLoop);
 			int indexOfEndSubMaxString = indexOfSubMaxString + maxStringLoop.length();
-			String from0ToIndexOfMaxString = string.substring(0, string.indexOf(maxStringLoop));
+			String from0ToIndexOfMaxString = string.substring(0, indexOfSubMaxString);
 			String fromIndexOfMaxStringToEnd = string.substring(indexOfEndSubMaxString, string.length());
 			return getAllStringLoop(from0ToIndexOfMaxString) + getAllStringLoop(maxStringLoop)
 					+ getAllStringLoop(fromIndexOfMaxStringToEnd);
@@ -110,9 +118,10 @@ public class HienThiDayDuChuoi {
 
 	public static int countLoopCount(String string) {
 		int count = 0;
-		List<Integer> list = getListPrime(string.length());
-		for (int i = list.size() - 1; i >= 0; i--) {
-			int last = string.length() / list.get(i);
+		Stack<Integer> stack = getListPrime(string.length());
+		while (!stack.isEmpty()) {
+			int i = stack.pop();
+			int last = string.length() / i;
 			String subString = string.substring(0, last);
 			int k = last;
 			while (k < string.length()) {
@@ -124,29 +133,32 @@ public class HienThiDayDuChuoi {
 				}
 			}
 			if (k == string.length()) {
-				count = list.get(i);
+				count = i;
 				break;
 			}
 		}
+		// System.out.println(count);
 		return count;
 
 	}
 
-	public static List<Integer> getListPrime(int n) {
-		List<Integer> list = new ArrayList<>();
-		for (int i = 2; i <= (int) Math.sqrt(n); i++) {
+	public static Stack<Integer> getListPrime(int n) {
+		Stack<Integer> stack = new Stack<>();
+		for (int i = 2; i <= n / 2; i++) {
 			if (n % i == 0) {
-				list.add(i);
+				stack.push(i);
 			}
 		}
-		list.add(n);
-		return list;
+		stack.push(n);
+		return stack;
 	}
 
 	public static void main(String[] args) {
-		String s1 = unpacking("(a)10");
-		System.out.println(s1);
+		long start = System.currentTimeMillis();
+		String s1 = unpacking("(abc)2abcda(bcdef)2");
 		System.out.println(getAllStringLoop(s1));
+		// String s3 = unpacking("(ABC(EF)3)3");
+		System.out.println(System.currentTimeMillis() - start);
 	}
 
 }

@@ -6,7 +6,9 @@
 package tests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -19,6 +21,7 @@ public class ConwaySequence {
 		int R = in.nextInt();
 		int L = in.nextInt();
 		List<Integer> list = new ArrayList<>();
+		Map map = new HashMap<>();
 		String result = "";
 		list.add(R);
 		while (L > 1) {
